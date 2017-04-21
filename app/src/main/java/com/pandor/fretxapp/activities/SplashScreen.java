@@ -117,6 +117,7 @@ public class SplashScreen extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Permiso.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
+        Permiso.getInstance().setActivity(this);
     }
 
     //init audio

@@ -39,11 +39,10 @@ public class BaseActivity extends AppCompatActivity {
         Log.d(TAG, "Set weak reference");
         activity = new WeakReference<AppCompatActivity>(this);
 
-        //if (Midi.getInstance().isEnabled())
-        //    Midi.getInstance().start();
-        //if (Audio.getInstance().isEnabled())
-        //    Audio.getInstance().start();
-
+        if (Midi.getInstance().isEnabled())
+            Midi.getInstance().start();
+        if (Audio.getInstance().isEnabled())
+            Audio.getInstance().start();
         if (Bluetooth.getInstance().isEnabled()) {
             Bluetooth.getInstance().start();
             if (wasScanning)
@@ -55,10 +54,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        //if (Midi.getInstance().isEnabled())
-        //    Midi.getInstance().stop();
-        //if (Audio.getInstance().isEnabled())
-        //    Audio.getInstance().stop();
+        if (Midi.getInstance().isEnabled())
+            Midi.getInstance().stop();
+        if (Audio.getInstance().isEnabled())
+            Audio.getInstance().stop();
         if (Bluetooth.getInstance().isEnabled()) {
             wasScanning = Bluetooth.getInstance().isScanning();
             Bluetooth.getInstance().stop();

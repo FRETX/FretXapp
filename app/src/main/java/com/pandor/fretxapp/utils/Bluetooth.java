@@ -157,8 +157,8 @@ public class Bluetooth {
                 connect(devices.valueAt(0));
             } else {
                 if (onUpdate != null) {
-                    onUpdate.onFailure();
                     mProgress.dismiss();
+                    onUpdate.onFailure();
                 }
                 Log.d(TAG, "no device found");
             }
@@ -219,10 +219,10 @@ public class Bluetooth {
                 Log.d(TAG, "failure, disconnecting");
                 gatt.disconnect();
                 connectedGatt = null;
+                mProgress.dismiss();
                 if (onUpdate != null) {
                     onUpdate.onFailure();
                 }
-                mProgress.dismiss();
             }
         }
 
