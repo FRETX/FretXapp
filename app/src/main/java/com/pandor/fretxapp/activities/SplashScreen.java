@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +36,7 @@ public class SplashScreen extends BaseActivity {
             public void onComplete(){
                 Log.d(TAG, "Complete!");
                 if (Bluetooth.getInstance().isEnabled()) {
-                    Bluetooth.getInstance().startScan();
+                    Bluetooth.getInstance().scan();
                 } else {
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
@@ -49,7 +48,6 @@ public class SplashScreen extends BaseActivity {
         Bluetooth.getInstance().setOnUpdate(new Bluetooth.IOnUpdate() {
             public void onSuccess() {
                 Log.d(TAG, "Success!");
-                Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
                 Bluetooth.getInstance().setOnUpdate(null);
                 Bluetooth.getInstance().clearMatrix();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -58,7 +56,6 @@ public class SplashScreen extends BaseActivity {
 
             public void onFailure() {
                 Log.d(TAG, "Failure!");
-                Toast.makeText(getActivity(), "Failed to connect", Toast.LENGTH_SHORT).show();
                 Bluetooth.getInstance().setOnUpdate(null);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
@@ -107,9 +104,6 @@ public class SplashScreen extends BaseActivity {
     protected void onResume() {
         super.onResume();
         Permiso.getInstance().setActivity(this);
-
-        if (Bluetooth.getInstance().isEnabled() && !Bluetooth.getInstance().isConnected())
-            Bluetooth.getInstance().startScan();
     }
 
     //redirect callback to Permiso
@@ -134,7 +128,7 @@ public class SplashScreen extends BaseActivity {
     private void initBluetooth() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && !Bluetooth.getInstance().isEnabled()) {
-            Bluetooth.getInstance().init(this);
+            Bluetooth.getInstance().init();
             Bluetooth.getInstance().start();
         }
     }

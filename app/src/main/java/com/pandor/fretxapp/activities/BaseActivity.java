@@ -1,6 +1,7 @@
 package com.pandor.fretxapp.activities;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,12 +21,11 @@ public class BaseActivity extends AppCompatActivity {
     private final static String TAG = "KJKP6_BASEACTIVITY";
     private static WeakReference<AppCompatActivity> activity = null;
 
-    private boolean wasScanning;
+    private boolean wasScanning = false;
 
-    //// TODO: 20/04/17 check this on create: onCreate(Bundle, PersistableBundle)
-    //// may corrupt the weak reference!
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "============================== ON CREATE ==============================");
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, "Set weak reference");
@@ -33,7 +33,17 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        Log.d(TAG, "========================= ON CREATE PERSISTABLE ========================");
+        super.onCreate(savedInstanceState, persistentState);
+
+        Log.d(TAG, "Set weak reference");
+        activity = new WeakReference<AppCompatActivity>(this);
+    }
+
+    @Override
     protected void onResume() {
+        Log.d(TAG, "============================== ON RESUME ==============================");
         super.onResume();
 
         Log.d(TAG, "Set weak reference");
@@ -46,12 +56,13 @@ public class BaseActivity extends AppCompatActivity {
         if (Bluetooth.getInstance().isEnabled()) {
             Bluetooth.getInstance().start();
             if (wasScanning)
-                Bluetooth.getInstance().startScan();
+                Bluetooth.getInstance().scan();
         }
     }
 
     @Override
     protected void onPause() {
+        Log.d(TAG, "============================== ON PAUSE ===============================");
         super.onPause();
 
         if (Midi.getInstance().isEnabled())
@@ -67,6 +78,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "=============================== ON STOP ===============================");
         super.onStop();
 
         Log.d(TAG, "Set weak reference to null");

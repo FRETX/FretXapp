@@ -9,12 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.pages.ViewPagerAdapter;
 import com.pandor.fretxapp.pages.chord.ChordFragment;
 import com.pandor.fretxapp.pages.learn.LearnFragment;
 import com.pandor.fretxapp.pages.song.PlayFragment;
+import com.pandor.fretxapp.utils.Bluetooth;
 
 public class MainActivity extends BaseActivity {
 
@@ -24,6 +26,14 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Bluetooth.getInstance().isEnabled()) {
+            if (Bluetooth.getInstance().isConnected()){
+                Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Connection failed", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
