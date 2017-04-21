@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/content_frame"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:weightSum="1">
+
+
+    <FrameLayout
+        android:id="@+id/chordPicker_place"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25">
+    </FrameLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="?android:textColorPrimary"
+        android:background="?android:colorBackground"
+        android:id="@+id/textChord"
+        android:textSize="28sp"
+        />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
+        />
+    <com.pandor.fretxapp.views.FretboardView
+        android:id="@+id/fretboardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.55"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        />
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.01"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.07"
+        android:text="Play Chord"
+        android:background="?android:colorPrimary"
+        android:textColor="?android:textColorTertiary"
+        android:id="@+id/playChordButton"
+        android:textSize="18sp"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"
+        />
+</LinearLayout>

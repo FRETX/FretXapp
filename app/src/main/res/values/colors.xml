@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#f44336</color>
+    <color name="primaryDark">#D32F2F</color>
+    <color name="primaryLight">#FFCDD2</color>
+    <color name="accent">#D32F2F</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#757575</color>
+    <color name="tertiaryText">#FFFFFF</color>
+    <color name="inactiveButton">#757575</color>
+    <color name="activeButton">#F44336</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="background">#FFFFFF</color>
+    <color name="deepBackground">#f5f5f5</color>
+    <color name="tunerCorrect">#64dd17</color>
+    <color name="blueLed">#002fff</color>
+    <color name="showcaseOverlay">#EED32F2F</color>
+    <color name="black_overlay">#66000000</color>
+</resources>

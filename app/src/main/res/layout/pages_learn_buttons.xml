@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:weightSum="1"
+    >
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="5dp"
+        android:layout_margin="8dp"
+        android:id="@+id/btGuidedChordExercises"
+        android:layout_weight="0.33"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/learn_background_guitar_01"
+            android:scaleType="centerCrop"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1"
+            >
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chord Exercises"
+                android:textSize="26sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start learning with our guided exercises"
+                android:textSize="14sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                                />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="5dp"
+        android:layout_margin="8dp"
+        android:id="@+id/btExerciseOne"
+        android:layout_weight="0.33"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/learn_background_guitar_02"
+            android:scaleType="centerCrop"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1"
+            >
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Custom Chord Exercise"
+                android:textSize="26sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Build your own training session"
+                android:textSize="14sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="5dp"
+        android:layout_margin="8dp"
+        android:id="@+id/btExerciseTwo"
+        android:layout_weight="0.33"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/learn_background_guitar_03"
+            android:scaleType="centerCrop"
+            android:weightSum="1"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1"
+            >
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Scale Exercises"
+                android:textSize="26sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Practice scales and improvisation"
+                android:textSize="14sp"
+                android:textColor="@color/tertiaryText"
+                android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

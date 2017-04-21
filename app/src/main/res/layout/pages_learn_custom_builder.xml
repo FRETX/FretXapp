@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/content_frame"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/chordPicker_place"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7">
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:textAlignment="center"
+            android:textColor="@color/primaryText"
+            android:background="@color/background"
+            android:textSize="30sp"
+            android:id="@+id/textChord"
+            />
+
+        <com.pandor.fretxapp.views.FretboardView
+            android:id="@+id/fretboardView"
+            android:layout_width="match_parent"
+            android:layout_height="230dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addedChordButton"
+            android:text="Chord List"
+
+            android:background="@color/primary"
+            android:textColor="@color/background"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textAlignment="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addChordButton"
+            android:text="+ Add Chord"
+
+            android:background="@color/primary"
+            android:textColor="@color/background"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textAlignment="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/startExerciseButton"
+            android:text="Play"
+
+            android:background="@color/primary"
+            android:textColor="@color/background"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+</FrameLayout>

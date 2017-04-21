@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/FretXapp.iml" filepath="$PROJECT_DIR$/FretXapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MidiDriver-1.13-32/MidiDriver-1.13-32.iml" filepath="$PROJECT_DIR$/MidiDriver-1.13-32/MidiDriver-1.13-32.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fretx-audio/fretx-audio.iml" filepath="$PROJECT_DIR$/fretx-audio/fretx-audio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/permiso/permiso.iml" filepath="$PROJECT_DIR$/permiso/permiso.iml" />
+    </modules>
+  </component>
+</project>

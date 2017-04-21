@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_layout">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_delete"
+            android:id="@+id/delete_button"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_add"
+            android:id="@+id/new_button"
+            android:layout_toLeftOf="@id/delete_button"
+            android:layout_alignParentTop="true"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sequence_selection"
+            android:gravity="center_vertical|start"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/new_button" />
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/chords_listview"
+        android:layout_below="@+id/spinner_layout" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_layout"
+        android:layout_below="@id/chords_listview"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        >
+
+        <Button
+            android:text="Save As"
+            android:layout_height="36dp"
+            android:id="@+id/saveas_button"
+            android:textColor="@color/tertiaryText"
+            android:textAllCaps="false"
+            android:background="@color/primary"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="36dp"
+            android:layout_width="100dp"/>
+
+        <Button
+            android:text="Save"
+            android:layout_height="36dp"
+            android:id="@+id/save_button"
+            android:textColor="@color/tertiaryText"
+            android:background="@color/primary"
+            android:textAllCaps="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="36dp"
+            android:layout_width="100dp"/>
+
+    </RelativeLayout>
+
+    <!--<Button-->
+        <!--android:text="Play"-->
+        <!--android:layout_height="36dp"-->
+        <!--android:layout_marginBottom="15dp"-->
+        <!--android:id="@+id/play_button"-->
+        <!--android:textColor="@color/tertiaryText"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:background="@color/primary"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_width="100dp"/>-->
+
+</RelativeLayout>
