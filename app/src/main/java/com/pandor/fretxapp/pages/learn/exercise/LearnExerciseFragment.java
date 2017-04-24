@@ -21,20 +21,17 @@ import android.widget.Toast;
 
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.pages.learn.guided.GuidedChordExercise;
-import com.pandor.fretxapp.utils.Audio;
+import com.pandor.fretxapp.utils.Audio.Audio;
+import com.pandor.fretxapp.utils.Audio.AudioListener;
 import com.pandor.fretxapp.utils.Midi;
 import com.pandor.fretxapp.utils.TimeUpdater;
 import com.pandor.fretxapp.views.FretboardView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import rocks.fretx.audioprocessing.Chord;
-import rocks.fretx.audioprocessing.FingerPositions;
-import rocks.fretx.audioprocessing.MusicUtils;
 
-public class LearnExerciseFragment extends Fragment implements Audio.AudioDetectorListener,
+public class LearnExerciseFragment extends Fragment implements AudioListener,
         LearnExerciseDialog.LearnGuidedChordExerciseListener {
     private final static String LIST_INDEX = "list_index";
     private final static String LIST = "list";

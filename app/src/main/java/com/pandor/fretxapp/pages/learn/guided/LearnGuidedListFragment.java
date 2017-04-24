@@ -1,13 +1,16 @@
 package com.pandor.fretxapp.pages.learn.guided;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pandor.fretxapp.R;
+import com.pandor.fretxapp.utils.Firebase;
 
 import org.json.JSONArray;
 import org.json.JSONException;

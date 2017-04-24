@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.fragments.ChordPicker;
-import com.pandor.fretxapp.utils.Bluetooth;
+import com.pandor.fretxapp.utils.Bluetooth.Bluetooth;
 import com.pandor.fretxapp.views.FretboardView;
 
 import rocks.fretx.audioprocessing.Scale;

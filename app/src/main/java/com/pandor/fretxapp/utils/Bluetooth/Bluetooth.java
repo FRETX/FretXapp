@@ -1,4 +1,4 @@
-package com.pandor.fretxapp.utils;
+package com.pandor.fretxapp.utils.Bluetooth;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -15,9 +15,11 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.pandor.fretxapp.activities.BaseActivity;
 
@@ -40,25 +42,53 @@ import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class Bluetooth {
     private static final String TAG = "KJKP6_BLUETOOTH_UTIL";
-    private static final int SCAN_DELAY = 8000;
+
+    //delays
+    private static final int SCAN_DELAY = 3000;
     private static final int TURN_ON_INTERVAL = 100;
     private static final int TURN_ON_DELAY = 2000;
+
+    //states
+    private boolean enabled;
+    private boolean scanning;
+    private boolean wasScanning;
+
+    private BluetoothAdapter adapter;
+    private BluetoothGatt gatt;
+    private final SparseArray<BluetoothDevice> devices = new SparseArray<>();
+    private static final int PROGRESS_MSG = 1;
+    private static final int PROGRESS_DISMISS = 2;
+    private static final int TOAST = 3;
+    private static final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case PROGRESS_MSG:
+                    progress.setMessage((String) message.obj);
+                    break;
+                case PROGRESS_DISMISS:
+                    progress.dismiss();
+                    break;
+                case TOAST:
+                    Toast.makeText(BaseActivity.getActivity(), (String) message.obj, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    super.handleMessage(message);
+            }
+        }
+    };
+
+    private static ProgressDialog progress;
+    private BluetoothListener listener;
+    private int turn_on_try;
+
+    //fretx specific
     private static final String DEVICE_NAME = "FretX";
     private static final UUID RX_SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
     private static final UUID RX_CHAR_UUID = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
 
-    private boolean enabled;
-    private boolean scanning;
-    private BluetoothAdapter adapter;
-    //private final SparseArray<BluetoothDevice> devices = new SparseArray<>();
-    private final Handler handler = new Handler();
-    private BluetoothGatt connectedGatt;
-    private BluetoothGattCharacteristic RxChar;
+    private BluetoothGattCharacteristic rx;
     private final byte[] clear = new byte[]{0};
-    private ProgressDialog mProgress;
-    private IOnUpdate onUpdate;
-    private int turn_on_try = 0;
-
     private HashMap<String,FingerPositions> chordFingerings;
 
     /* = = = = = = = = = = = = = = = = = SINGLETON PATTERN = = = = = = = = = = = = = = = = = = = */
@@ -92,14 +122,25 @@ public class Bluetooth {
     }
 
     public void start() {
+        if (!enabled)
+            return;
         Log.d(TAG, "start");
+        if (wasScanning && !scanning) {
+            wasScanning = false;
+            scan();
+        }
     }
 
     public void stop(){
+        if (!enabled)
+            return;
         handler.removeCallbacksAndMessages(null);
-        if (scanning)
-            stopScan();
-        mProgress.dismiss();
+        if (scanning) {
+            adapter.getBluetoothLeScanner().stopScan(scanCallback);
+            wasScanning = true;
+            scanning = false;
+        }
+        progress.dismiss();
         Log.d(TAG, "stop");
     }
 
@@ -109,15 +150,17 @@ public class Bluetooth {
 
     /* = = = = = = = = = = = = = = = = = = = SCANNING = = = = = = = = = = = = = = = = = = = = = */
     public void scan() {
-        mProgress = new ProgressDialog(BaseActivity.getActivity());
-        mProgress.setIndeterminate(true);
-        mProgress.setCancelable(false);
-        mProgress.setMessage("Enabling...");
-        mProgress.show();
+        progress = new ProgressDialog(BaseActivity.getActivity());
+        progress.setIndeterminate(true);
+        progress.setCancelable(false);
+
+        handler.obtainMessage(PROGRESS_MSG, "Enabling").sendToTarget();
+        progress.show();
 
         Log.d(TAG, "enabling...");
         if(!adapter.isEnabled()) {
             adapter.enable();
+            turn_on_try = 0;
             handler.postDelayed(enable, TURN_ON_INTERVAL);
         } else {
             startScan();
@@ -136,12 +179,11 @@ public class Bluetooth {
                     handler.postDelayed(enable, TURN_ON_INTERVAL);
                 } else {
                     Log.d(TAG, "Enable failed");
-                    mProgress.dismiss();
-                    if (onUpdate != null)
-                        onUpdate.onFailure();
+                    progress.dismiss();
+                    if (listener != null)
+                        listener.onScanFailure();
                 }
             } else {
-                mProgress.setMessage("Scanning...");
                 startScan();
             }
         }
@@ -149,8 +191,8 @@ public class Bluetooth {
 
     private void startScan() {
         Log.d(TAG, "scanning...");
-        mProgress.setMessage("Scanning...");
-        //devices.clear();
+        handler.obtainMessage(PROGRESS_MSG, "Scanning").sendToTarget();
+        devices.clear();
         ScanSettings settings = new ScanSettings.Builder().build();
         ScanFilter filter = new ScanFilter.Builder().setDeviceName(DEVICE_NAME).build();
         List<ScanFilter> filters = new ArrayList<>();
@@ -160,32 +202,27 @@ public class Bluetooth {
         handler.postDelayed(endOfScan, SCAN_DELAY);
     }
 
-    private void stopScan() {
-        Log.d(TAG, "stop scanning");
-        scanning = false;
-        adapter.getBluetoothLeScanner().stopScan(scanCallback);
-    }
-
-    public boolean isScanning() {
-        return scanning;
-    }
-
     private Runnable endOfScan = new Runnable() {
         @Override
         public void run() {
-
-            /*
+            adapter.getBluetoothLeScanner().stopScan(scanCallback);
+            scanning = false;
             if (devices.size() == 1) {
-                stopScan();
+                handler.removeCallbacksAndMessages(null);
                 connect(devices.valueAt(0));
+            } else if (devices.size() > 1) {
+                Log.d(TAG, "Too many devices found");
+                progress.dismiss();
+                if (listener != null) {
+                    listener.onScanFailure();
+                }
             } else {
-                Log.d(TAG, "no device found");
-                if (onUpdate != null) {
-                    mProgress.dismiss();
-                    onUpdate.onFailure();
+                Log.d(TAG, "No device found");
+                progress.dismiss();
+                if (listener != null) {
+                    listener.onScanFailure();
                 }
             }
-            */
         }
     };
 
@@ -194,12 +231,8 @@ public class Bluetooth {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-            stopScan();
-            handler.removeCallbacksAndMessages(null);
-            connect(result.getDevice());
-
-            //BluetoothDevice device = result.getDevice();
-            //devices.put(device.hashCode(), device);
+            BluetoothDevice device = result.getDevice();
+            devices.put(device.hashCode(), device);
         }
 
         @Override
@@ -221,10 +254,9 @@ public class Bluetooth {
             else if (errorCode == SCAN_FAILED_INTERNAL_ERROR)
                 Log.d(TAG, "Scan failed: SCAN_FAILED_ALREADY_STARTED");
 
-            mProgress.dismiss();
-
-            if (onUpdate != null) {
-                onUpdate.onFailure();
+            progress.dismiss();
+            if (listener != null) {
+                listener.onScanFailure();
             }
         }
     };
@@ -232,89 +264,92 @@ public class Bluetooth {
     /* = = = = = = = = = = = = = = = = = = = CONNECTING = = = = = = = = = = = = = = = = = = = = = */
     private void connect(BluetoothDevice device) {
         Log.d(TAG, "connecting");
-        mProgress.setMessage("Connecting...");
-        connectedGatt = device.connectGatt(BaseActivity.getActivity(), false, gattCallback);
+        handler.obtainMessage(PROGRESS_MSG, "Connecting").sendToTarget();
+        gatt = device.connectGatt(BaseActivity.getActivity(), false, gattCallback);
     }
 
     public void disconnect() {
-        if (connectedGatt != null) {
+        if (gatt != null) {
             Log.d(TAG, "disconnecting");
-            connectedGatt.disconnect();
-            connectedGatt = null;
+            gatt.close();
+            gatt = null;
         }
     }
 
     public boolean isConnected() {
-        return !(connectedGatt == null);
+        return !(gatt == null);
     }
 
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
-
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
-                mProgress.setMessage("Discovering services...");
-                Log.d(TAG, "connected");
+                handler.obtainMessage(PROGRESS_DISMISS, null).sendToTarget();
+                handler.obtainMessage(TOAST, "Connected").sendToTarget();
+                Log.d(TAG, "discovering...");
+                if (listener != null)
+                    listener.onConnect();
+                handler.obtainMessage(PROGRESS_MSG, "Discovering services").sendToTarget();
                 gatt.discoverServices();
             } else if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.d(TAG, "disconnected");
-                connectedGatt = null;
+                if (listener != null)
+                    listener.onDisconnect();
+                Bluetooth.this.gatt = null;
+                handler.obtainMessage(TOAST, "Connection failed").sendToTarget();
+                handler.obtainMessage(PROGRESS_DISMISS, null).sendToTarget();
             } else if (status != BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "failure, disconnecting");
-                gatt.disconnect();
-                connectedGatt = null;
-                mProgress.dismiss();
-                if (onUpdate != null) {
-                    onUpdate.onFailure();
-                }
+                gatt.close();
+                Bluetooth.this.gatt = null;
+                handler.obtainMessage(PROGRESS_DISMISS, null).sendToTarget();
+                handler.obtainMessage(TOAST, "Connection failed").sendToTarget();
+                if (listener != null)
+                    listener.onFailure();
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-
-            BluetoothGattService RxService = connectedGatt.getService(RX_SERVICE_UUID);
-            RxChar = RxService.getCharacteristic(RX_CHAR_UUID);
-
-            mProgress.dismiss();
-            if (onUpdate != null) {
-                onUpdate.onSuccess();
-            }
+            BluetoothGattService RxService = Bluetooth.this.gatt.getService(RX_SERVICE_UUID);
+            rx = RxService.getCharacteristic(RX_CHAR_UUID);
         }
     };
 
     /* = = = = = = = = = = = = = = = = = = = = = MATRIX = = = = = = = = = = = = = = = = = = = = = */
     public void setMatrix(Chord chord) {
-        if (connectedGatt == null || RxChar == null)
+        if (gatt == null || rx == null)
             return;
         byte[] bluetoothArray = MusicUtils.getBluetoothArrayFromChord(chord.toString(), chordFingerings);
-        RxChar.setValue(bluetoothArray);
-        connectedGatt.writeCharacteristic(RxChar);
+        rx.setValue(bluetoothArray);
+        gatt.writeCharacteristic(rx);
+    }
+
+    public void setMatrix(byte[] fingerings) {
+        if (gatt == null || rx == null)
+            return;
+        rx.setValue(fingerings);
+        gatt.writeCharacteristic(rx);
     }
 
     public void setMatrix(Scale scale) {
-        if (connectedGatt == null || RxChar == null)
+        if (gatt == null || rx == null)
             return;
         byte[] bluetoothArray = MusicUtils.getBluetoothArrayFromChord(scale.toString(), chordFingerings);
-        RxChar.setValue(bluetoothArray);
-        connectedGatt.writeCharacteristic(RxChar);
+        rx.setValue(bluetoothArray);
+        gatt.writeCharacteristic(rx);
     }
 
     public void clearMatrix() {
-        if (connectedGatt == null || RxChar == null)
+        if (gatt == null || rx == null)
             return;
-        RxChar.setValue(clear);
-        connectedGatt.writeCharacteristic(RxChar);
+        rx.setValue(clear);
+        gatt.writeCharacteristic(rx);
     }
 
     /* = = = = = = = = = = = = = = = = = = = LISTENERS = = = = = = = = = = = = = = = = = = = = = */
-    public void setOnUpdate(@Nullable IOnUpdate onUpdate) {
-        this.onUpdate = onUpdate;
-    }
-
-    public interface IOnUpdate {
-        void onFailure();
-        void onSuccess();
+    public void setListener(@Nullable BluetoothListener listener) {
+        this.listener = listener;
     }
 }

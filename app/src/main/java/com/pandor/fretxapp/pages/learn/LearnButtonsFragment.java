@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.pages.learn.custom.LearnCustomBuilderFragment;
 import com.pandor.fretxapp.pages.learn.guided.LearnGuidedListFragment;
 import com.pandor.fretxapp.pages.learn.scale.LearnScaleExerciseFragment;
+import com.pandor.fretxapp.utils.Firebase;
 
 public class LearnButtonsFragment extends Fragment {
 
@@ -32,6 +34,8 @@ public class LearnButtonsFragment extends Fragment {
         btExerciseOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firebaseExercise("Custom");
+
                 android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.learn_container, new LearnCustomBuilderFragment());
                 fragmentTransaction.addToBackStack(null);
@@ -43,6 +47,8 @@ public class LearnButtonsFragment extends Fragment {
         btExerciseTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firebaseExercise("Scale");
+
                 android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.learn_container, new LearnScaleExerciseFragment());
                 fragmentTransaction.addToBackStack(null);
@@ -55,6 +61,8 @@ public class LearnButtonsFragment extends Fragment {
         btGuidedChordExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firebaseExercise("Guided");
+
                 android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.learn_container, new LearnGuidedListFragment());
                 fragmentTransaction.addToBackStack(null);
@@ -62,5 +70,13 @@ public class LearnButtonsFragment extends Fragment {
                 fragmentManager.executePendingTransactions();
             }
         });
+    }
+
+    private void firebaseExercise(String s) {
+        //firebase log event
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, s);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "EXERCISE");
+        Firebase.getAnalytics().logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

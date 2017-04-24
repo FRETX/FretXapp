@@ -8,7 +8,9 @@
         appcompat:showAsAction="always"/>
 
     <item
-        android:id="@+id/action_settings"
-        android:title="setting"
+        android:id="@+id/action_bluetooth"
+        android:title="bluetooth"
+        android:icon="@mipmap/ic_launcher"
+        appcompat:showAsAction="ifRoom"
         />
 </menu>

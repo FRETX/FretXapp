@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.fragments.ChordPicker;
 import com.pandor.fretxapp.pages.learn.exercise.LearnExerciseFragment;
-import com.pandor.fretxapp.utils.Bluetooth;
+import com.pandor.fretxapp.utils.Bluetooth.Bluetooth;
 import com.pandor.fretxapp.views.FretboardView;
 
 import java.util.ArrayList;

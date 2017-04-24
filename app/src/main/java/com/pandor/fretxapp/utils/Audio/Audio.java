@@ -1,4 +1,4 @@
-package com.pandor.fretxapp.utils;
+package com.pandor.fretxapp.utils.Audio;
 
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -37,7 +37,7 @@ public class Audio {
     private boolean timeoutNotified;
 
     //listener
-    private AudioDetectorListener listener;
+    private AudioListener listener;
 
     /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
     private static class Holder {
@@ -64,6 +64,8 @@ public class Audio {
     }
 
     public void start() {
+        if (!enabled)
+            return;
         Log.d(TAG, "start");
         if (!audio.isInitialized())
             audio.initialize(FS, BUFFER_SIZE_S);
@@ -72,6 +74,8 @@ public class Audio {
     }
 
     public void stop() {
+        if (!enabled)
+            return;
         Log.d(TAG, "stop");
         if (audio.isProcessing() ) {
             audio.stop();
@@ -100,6 +104,10 @@ public class Audio {
 
     public double getProgress() {
         return correctlyPlayedAccumulator / CORRECTLY_PLAYED_DURATION_MS * 100;
+    }
+
+    public float getPitch() {
+        return enabled ? audio.getPitch() : -1;
     }
 
     //todo replace with a handler to avoid restart of countdown timer
@@ -173,14 +181,7 @@ public class Audio {
     };
 
     /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-    public void setAudioDetectorListener(AudioDetectorListener listener) {
+    public void setAudioDetectorListener(AudioListener listener) {
         this.listener = listener;
-    }
-
-    public interface AudioDetectorListener {
-        void onProgress();
-        void onLowVolume();
-        void onHighVolume();
-        void onTimeout();
     }
 }

@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pandor.fretxapp.fragments.ChordPicker;
 import com.pandor.fretxapp.R;
-import com.pandor.fretxapp.utils.Bluetooth;
+import com.pandor.fretxapp.utils.Bluetooth.Bluetooth;
+import com.pandor.fretxapp.utils.Firebase;
 import com.pandor.fretxapp.utils.Midi;
 import com.pandor.fretxapp.views.FretboardView;
 
@@ -33,7 +35,19 @@ public class ChordFragment extends Fragment implements ChordPicker.ChordPickerLi
 	}
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //firebase log event
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Chords");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "TAB");
+        Firebase.getAnalytics().logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //view
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ChordPicker chordPicker = ChordPicker.newInstance(this, Chord.ALL_ROOT_NOTES, Chord.ALL_CHORD_TYPES);
         ft.replace(R.id.chordPicker_place, chordPicker);

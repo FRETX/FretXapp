@@ -3,10 +3,10 @@ package com.pandor.fretxapp.utils;
 import android.os.Handler;
 import android.util.Log;
 
-import java.util.Arrays;
-
 import org.billthefarmer.mididriver.GeneralMidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
+
+import java.util.Arrays;
 
 import rocks.fretx.audioprocessing.Chord;
 
@@ -53,12 +53,16 @@ public class Midi extends MidiDriver implements MidiDriver.OnMidiStartListener {
 
     @Override
     public void start() {
+        if (!enabled)
+            return;
         Log.d(TAG, "start");
         super.start();
     }
 
     @Override
     public void stop() {
+        if (!enabled)
+            return;
         Log.d(TAG, "stop");
         super.start();
     }

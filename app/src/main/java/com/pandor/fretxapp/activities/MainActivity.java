@@ -9,31 +9,52 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.pandor.fretxapp.R;
 import com.pandor.fretxapp.pages.ViewPagerAdapter;
 import com.pandor.fretxapp.pages.chord.ChordFragment;
 import com.pandor.fretxapp.pages.learn.LearnFragment;
 import com.pandor.fretxapp.pages.song.PlayFragment;
-import com.pandor.fretxapp.utils.Bluetooth;
+import com.pandor.fretxapp.utils.Bluetooth.Bluetooth;
+import com.pandor.fretxapp.utils.Bluetooth.BluetoothListener;
 
 public class MainActivity extends BaseActivity {
+    private static final String TAG = "KJKP6_MAINACTIVITY";
 
     private ActionBar actionBar;
+    private MenuItem bluetoothIcon;
+
+    private final BluetoothListener bluetoothListener = new BluetoothListener() {
+        @Override
+        public void onConnect() {
+            Log.d(TAG, "Connected!");
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_blue_led, null));
+            Bluetooth.getInstance().clearMatrix();
+        }
+
+        @Override
+        public void onScanFailure() {
+            Log.d(TAG, "Failed!");
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_red_led, null));
+        }
+
+        @Override
+        public void onDisconnect() {
+            Log.d(TAG, "Failed!");
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_red_led, null));
+        }
+
+        @Override
+        public void onFailure(){
+            Log.d(TAG, "Failed!");
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_red_led, null));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (Bluetooth.getInstance().isEnabled()) {
-            if (Bluetooth.getInstance().isConnected()){
-                Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), "Connection failed", Toast.LENGTH_SHORT).show();
-            }
-        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
@@ -43,6 +64,41 @@ public class MainActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(false);
 
         setupTabLayout();
+
+        Bluetooth.getInstance().setListener(bluetoothListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        bluetoothIcon = menu.findItem(R.id.action_bluetooth);
+        if (Bluetooth.getInstance().isConnected()) {
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_blue_led, null));
+        } else {
+            bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_red_led, null));
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_bluetooth:
+                bluetoothIcon.setIcon(getResources().getDrawable(R.drawable.view_fretboard_red_led, null));
+                Bluetooth.getInstance().disconnect();
+                Bluetooth.getInstance().scan();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     private void setupTabLayout() {
@@ -80,26 +136,5 @@ public class MainActivity extends BaseActivity {
 
         //update activity title
         actionBar.setTitle(adapter.getPageTitle(0));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        //// TODO: 18/04/17 add search bar action code
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        }
     }
 }
